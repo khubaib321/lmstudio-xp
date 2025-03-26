@@ -32,7 +32,7 @@ def select_model() -> _lmstudio.AnyDownloadedModel:
         exit()
 
 
-def print_text(text: str, end: str = "\n"):
+def print_text(text: str, end: str = "\n", new_line: bool = False):
     if not text.strip():
         return
 
@@ -41,6 +41,10 @@ def print_text(text: str, end: str = "\n"):
         italic=True,
         color="light_yellow3",
     )
+
+    if new_line:
+        _rich_print()
+
     console.print(
         text, end=end, width=640, style=style, soft_wrap=True, new_line_start=True
     )
@@ -58,7 +62,7 @@ def print_markdown(content: str) -> None:
     style = _style.Style(
         color="pale_green3",
     )
-    console.print(markdown, width=640, style=style, soft_wrap=True, new_line_start=True)
+    console.print(markdown, width=640, style=style, new_line_start=True)
 
 
 def print_reasoning_fragment(
@@ -67,7 +71,7 @@ def print_reasoning_fragment(
     answer = ""
 
     if fragment.reasoning_type == "none":
-        # Answer fragment.
+        # Answer fragment. Don't print immediately.
         _rich_print(".", end="")
         answer = fragment.content
     else:
