@@ -1,0 +1,6 @@
+ruff
+rich-cli
+lmstudio
+pydantic
+beautifulsoup4
+googlesearch-python
