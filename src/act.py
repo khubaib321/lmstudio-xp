@@ -10,10 +10,7 @@ from . import _common
 
 def _google_search(query: str, num_pages: int = 10) -> dict[str, str]:
     """
-    Perform a google search with the given query text.
-    The tool will open first 'num_pages' pages and extract all text from each web page.
-    The consumer of this tool must make sure to use only parts of the text relevant for the query.
-    A web page that cannot be opened is not included in the result. The returned dict may not have the same number of items as 'num_pages'.
+    Perform a google search with the given query and return text on each page.
 
     Args:
         query (str): Text to search on the Google search engine.
@@ -23,11 +20,11 @@ def _google_search(query: str, num_pages: int = 10) -> dict[str, str]:
         dict[str, str]: A dictionary of web page links to their text content.
     """
 
-    results = {}
     _common.print_text(
         f"[_google_search] Searching for '{query}' and reading first {num_pages} results.",
         new_line=True,
     )
+    results: dict[str, str] = {}
     for link in _gsearch(query, num_results=num_pages, unique=True):
         _common.print_text(f"[_google_search] Reading: {link}", end=" ")
 
@@ -70,9 +67,9 @@ def do(prompt: str) -> None:
         _lmstudio.ToolFunctionDef(
             name="Google Search",
             description="""
-                Perform a google search with the given query text.
+                Perform a google search with the given query.
                 The tool will open first 'num_pages' pages and extract all text from each web page.
-                The consumer of this tool must make sure to use only parts of the text relevant for the query.
+                The consumer of this tool must make sure to use only parts of the web page text that are relevant for the query.
                 A web page that cannot be opened is not included in the result. The returned dict may not have the same number of items as 'num_pages'.
             """,
             parameters={
