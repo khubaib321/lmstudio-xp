@@ -6,6 +6,19 @@ from rich import (
     style as _style,
 )
 
+cot_logs_style = style = _style.Style(
+    italic=True,
+    color="light_pink3",
+)
+tool_logs_style = style = _style.Style(
+    italic=True,
+    color="light_yellow3",
+)
+response_logs_style = style = _style.Style(
+    bold=True,
+    color="pale_green3",
+)
+
 
 def select_model() -> _lmstudio.AnyDownloadedModel:
     downloaded_models = _lmstudio.list_downloaded_models()
@@ -37,16 +50,17 @@ def print_text(text: str, end: str = "\n", new_line: bool = False):
         return
 
     console = _console.Console()
-    style = _style.Style(
-        italic=True,
-        color="light_yellow3",
-    )
 
     if new_line:
-        _rich_print()
+        console.print()
 
     console.print(
-        text, end=end, width=640, style=style, soft_wrap=True, new_line_start=True
+        text,
+        end=end,
+        width=640,
+        style=tool_logs_style,
+        soft_wrap=True,
+        new_line_start=True,
     )
 
 
@@ -58,11 +72,7 @@ def print_markdown(content: str) -> None:
     markdown = _markdown.Markdown(content)
 
     console.print(new_line_start=True)
-
-    style = _style.Style(
-        color="pale_green3",
-    )
-    console.print(markdown, width=640, style=style, new_line_start=True)
+    console.print(markdown, width=640, style=response_logs_style, new_line_start=True)
 
 
 def print_reasoning_fragment(
@@ -70,14 +80,16 @@ def print_reasoning_fragment(
 ) -> str:
     answer = ""
 
+    console = _console.Console()
     if fragment.reasoning_type == "none":
         # Answer fragment. Don't print immediately.
-        _rich_print(".", end="")
+        console.print(".", end="")
         answer = fragment.content
     else:
         # Reasoning / CoT fragment.
-        _rich_print(fragment.content, end="")
+        console = _console.Console()
+        console.print(fragment.content, end="", width=640, style=cot_logs_style)
         if fragment.reasoning_type == "reasoningEndTag":
-            _rich_print()
+            console.print(" -> reasoning done.")
 
     return answer
